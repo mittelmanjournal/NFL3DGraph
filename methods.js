@@ -36,12 +36,12 @@ export const focusOnNode = node => {
 
     const newPos = node.x || node.y || node.z
         ? { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }
-        : { x: 0, y: 0, z: distance }; 
+        : { x: 0, y: 0, z: distance };
 
     Graph.cameraPosition(
-        newPos, 
-        node, 
-        2000 
+        newPos,
+        node,
+        2000
     );
 };
 
@@ -58,62 +58,51 @@ const showNodeHtmlOnHover = (node, prevNode) => {
     }
 };
 
+function setupContainer(container, id, className) {
+    container.id = id;
+    container.className = className;
+    container.style.visibility = 'hidden';
+}
+
+const prepareData = elements => elements.map((el, index) => index < elements.length - 1 ? el + "<br>" : el).join("");
+
+function appendElements(parentElement, elements) {
+    elements.forEach(element => {
+        parentElement.appendChild(element);
+    });
+}
+
 const setupNode = node => {
     // TODO: parameterize the scale of all the contents of this div into createGraph()
     // TODO: change the font of this div's text to something nicer
     const nodeContainer = document.createElement('div');
-    const playerName = document.createElement('h3'); 
+    const playerName = document.createElement('h3');
     const playerImage = document.createElement('img'); // TODO: make this player image cropped circularly. Also parameterize the size of this image in the createGraph method.
     const playerStats = document.createElement('div');
 
-    nodeContainer.id = "node-id-" + node.id;
-    nodeContainer.className = 'node-container';
-    nodeContainer.style.visibility = 'hidden';
-
-    playerName.textContent = node.name;
-    playerName.id = "name";
-
-    playerImage.src = node.imgLink;
-    playerImage.alt = node.imgLink;
-    playerImage.style.width = '50px';
+    setupContainer(nodeContainer, "node-id-" + node.id, 'node-container');
+    setHtmlElementTextAndId(playerName, node.name, "node-player-name");
+    setImgSrcAndWidth(playerImage, node.imgLink, '50px');
 
     // TODO: I want to parameterize these node colors below in the createGraph() method
-    const receiverData = node => "Position: " + node.position + "<br>" +
-        "Games Played: " + node.gamesPlayed + "<br>" +
-        "Games Started: " + node.gamesStarted + "<br>" +
-        "Receptions: " + node.receptions + "<br>" +
-        "Targets: " + node.targets + "<br>" +
-        "Yards: " + node.receivingYards + "<br>" +
-        "Touchdowns: " + node.receivingTouchdowns + "<br>" +
-        "Longest Reception: " + node.longestReception;
-
     if (node.position === "QB") {
-        node.color = "rgb(26, 192, 198)";
-        playerStats.innerHTML = "Total Career Data<br>Position: " + node.position + "<br>" +
-            "Passer Rating: " + node.passerRating + "<br>" +
-            "Games Played: " + node.gamesPlayed + "<br>" +
-            "Games Started: " + node.gamesStarted + "<br>" +
-            "Completions: " + node.passesCompleted + "<br>" +
-            "Attempts: " + node.passesAttempted + "<br>" +
-            "Yards: " + node.passYards + "<br>" +
-            "Touchdowns: " + node.passTouchdowns + "<br>" +
-            "Interceptions: " + node.passInterceptions + "<br>" +
-            "Longest Pass: " + node.longestPass;
+        node.color = "rgb(126, 217, 87)";
+        playerStats.innerHTML = prepareData(["Total Career Data", "Position: " + node.position, "Passer Rating: " + node.passerRating, "Games Played: " + node.gamesPlayed, "Games Started: " + node.gamesStarted,
+            "Completions: " + node.passesCompleted, "Attempts: " + node.passesAttempted, "Yards: " + node.passYards, "Touchdowns: " + node.passTouchdowns, "Interceptions: " + node.passInterceptions,
+            "Longest Pass: " + node.longestPass]);
     } else if (node.position === "WR" || node.position === "TE" || node.position === "RB" || node.position === "FB") {
-        switch(node.position){
-            case "WR": node.color = "rgb(58, 158, 253)"; break;
-            case "TE": node.color = "rgb(62, 68, 145)"; break;
-            case "RB": node.color = "rgb(41, 42, 115)"; break;
-            case "FB": node.color = "rgb(26, 27, 75)"; break;
+        switch (node.position) {
+            case "WR": node.color = "rgb(92, 225, 230)"; break;
+            case "TE": node.color = "rgb(255, 189, 89)"; break;
+            case "RB": node.color = "rgb(255, 102, 196)"; break;
+            case "FB": node.color = "rgb(255, 87, 87)"; break;
             default: node.color = "rgb(26, 27, 75)"; break;
         }
-        playerStats.innerHTML = receiverData(node);
+        playerStats.innerHTML = prepareData(["Total Career Data", "Position: " + node.position, "Games Played: " + node.gamesPlayed, "Games Started: " + node.gamesStarted, "Receptions: " + node.receptions,
+            "Targets: " + node.targets, "Yards: " + node.receivingYards, "Touchdowns: " + node.receivingTouchdowns, "Longest Reception: " + node.longestReception]);
     }
-
-    nodeContainer.appendChild(playerName);
-    nodeContainer.appendChild(playerImage);
-    nodeContainer.appendChild(playerStats);
-    nodeContainer.style.color = node.color;
+    appendElements(nodeContainer, [playerName, playerImage, playerStats]);
+    nodeContainer.style.color = node.color; // after setting the node color in the if chain above, set the color of the text in this node html container to the node's color
 
     return new CSS2DObject(nodeContainer);
 };
@@ -122,14 +111,6 @@ const getNodeMap = () => {
     return new Map(getGraph().graphData().nodes.map(node => [node.id, node]));
 }
 
-/**
- * Color the link and arrow based on the source node color.
- * The content includes image of source player on the left and target on the right.
- * 
- * 
- * @param {*} link 
- * @returns 
- */
 const setupLink = link => {
     const nodeMap = getNodeMap();
     const sourceNode = nodeMap.get(link.source);
@@ -142,38 +123,24 @@ const setupLink = link => {
     const targetImage = document.createElement('img');
     const sharedStats = document.createElement('div');
 
-    labelContainer.style.visibility = 'hidden';
-    labelContainer.id = 'link-id-' + link.source + '-' + link.target;
-    labelContainer.className = 'link-label';
-    
-    sourceName.textContent = sourceNode.name; // this doesn't work, I need to get the node's name property, not the link's
-    sourceName.id = "source-name";
-    
-    sourceImage.src = sourceNode.imgLink; // this doesn't work, I need to get the node's imgLink property, not the link's
-    sourceImage.style.width = '50px';
+    setupContainer(labelContainer, 'link-id-' + link.source + '-' + link.target, 'link-container');
+    setHtmlElementTextAndId(sourceName, sourceNode.name, "source-player-name");
+    setImgSrcAndWidth(sourceImage, sourceNode.imgLink, '50px');
+    setHtmlElementTextAndId(targetName, targetNode.name, "target-player-name");
+    setImgSrcAndWidth(targetImage, targetNode.imgLink, '50px');
 
-    targetName.textContent = targetNode.name; // this doesn't work, I need to get the node's name property, not the link's
-    targetName.id = "target-name";
+    sharedStats.innerHTML = prepareData(["Shared Data", "Targets: " + link.targets, "Receptions: " + link.receptions, "Yards: " + link.recYards, "Touchdowns: " + link.recTouchdowns, "Long: " + link.recLong]);
 
-    targetImage.src = targetNode.imgLink; // this doesn't work, I need to get the node's imgLink property, not the link's
-    targetImage.style.width = '50px';
+    appendElements(labelContainer, [sourceName, sourceImage, targetName, targetImage, sharedStats]);
 
-    sharedStats.innerHTML = "Targets: " + link.targets + "<br>" + 
-                            "Receptions: " + link.receptions + "<br>" + 
-                            "Yards: " + link.recYads + "<br>" + 
-                            "Touchdowns: " + link.recTouchdowns + "<br>" + 
-                            "Long: " + link.recLong;
-
-    labelContainer.appendChild(sourceName);
-    labelContainer.appendChild(sourceImage);
-    labelContainer.appendChild(targetName);
-    labelContainer.appendChild(targetImage);
-    labelContainer.appendChild(sharedStats);
-    
-    labelContainer.style.color = link.source.color;
+    labelContainer.style.color = sourceNode.color;
 
     return new CSS2DObject(labelContainer);
 };
+
+const setHtmlElementTextAndId = (element, text, id) => { element.textContent = text; element.id = id; };
+
+const setImgSrcAndWidth = (element, src, width) => { element.src = src; element.style.width = width; };
 
 const nodeSize = node => {
     if (node.position === "QB") {

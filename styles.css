@@ -42,7 +42,7 @@ body {
     user-select: none;
 }
 
-.link-label {
+.link-container {
     font-size: 12px;
     padding: 1px 4px;
     border-radius: 4px;

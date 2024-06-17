@@ -1,12 +1,12 @@
 import { createGraph, focusOnNode } from './methods.js';
 
 export let namesShown = false;
-let Graph = createGraph(16, 0.9, 0.4);
+let Graph = createGraph(10, 0.9, 0.4);
 
 export const getGraph = () => Graph;
 
 document.getElementById('seeEntireGraphBtn').addEventListener('click', () => {
-    Graph.zoomToFit(700); // This should work now
+    Graph.zoomToFit(700);
 });
 
 document.getElementById('searchBtn').addEventListener('click', () => {
