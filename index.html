@@ -1,0 +1,17 @@
+<head>
+    <script src="//unpkg.com/3d-force-graph"></script>
+    <script type="importmap">{ "imports": { "three": "https://unpkg.com/three/build/three.module.js" }}</script>
+    <script src="main.js" type="module"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div id="container">
+        <div id="searchContainer">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button id="searchBtn">Search</button>
+        </div>
+        <div id="3d-graph"></div>
+        <button id="seeEntireGraphBtn">Zoom out</button>
+        <button id="toggleNamesBtn">Toggle Node Names</button>
+    </div>
+</body>

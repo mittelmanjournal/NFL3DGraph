@@ -1,0 +1,53 @@
+body {
+    margin: 0;
+}
+
+/*TODO optimize the CSS below, make the button positions not absolute, but relative*/
+#container {
+    position: relative;
+    display: inline-block;
+    /* Ensure inline elements are correctly aligned */
+}
+
+#seeEntireGraphBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+}
+
+#toggleNamesBtn {
+    position: absolute;
+    top: 10px;
+    right: 100px;
+    z-index: 1;
+}
+
+#searchContainer {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+}
+
+#searchBtn {
+    margin-left: 5px;
+}
+
+.node-container {
+    font-size: 12px;
+    padding: 1px 4px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    user-select: none;
+}
+
+.link-label {
+    font-size: 12px;
+    padding: 1px 4px;
+    border-radius: 4px;
+    background-color: rgba(37, 12, 54, 0.8);
+    color: rgb(238, 216, 216);
+    /* Set the text color to white */
+    user-select: none;
+}

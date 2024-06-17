@@ -1,0 +1,32 @@
+TODO: External
+    1. Add defense player nodes.
+    2. Add team nodes (and the links each player has with that team via player splits, this also means to create a java file for the football DBM system)
+
+TODO: Integration
+    1. Create a github page and test the mobile experience
+
+TODO: Internal
+    1. Crop the player picture into a circle (do this during runtime/ pre-rendering. Most likely in setupNode)
+    2. Center the player picture in the div
+    3. Center the name text in the div
+    4. Change font for the node text to something nicer
+    5. Make the actual stat values a different color than the node color to contrast it and make it stand out
+    6. Change the node colors to something more palettable
+    7. Make the player image larger
+    8. Make a link search bar that takes in 2 inputs and zooms in on a link (similar to the click to focus animation)
+    9. Make the linkLabel html have a border and show the shared stats and pictures
+    10. Make the links a bit thicker
+    11. Make the arrows a bit thicker
+    12. Color the link the color of the source node
+    13. Make a view settings button that has the following options:
+        i. customize colors of different positions
+        ii. toggle all names
+        iii. toggle all images
+        iv. toggle all nodes' html
+        v. (ii through iv) toggle for not all, but for only a select few major nodes
+        vi. slider to increase and decrease the size of node images
+        vii. slider to increase every node html element size
+        viii. slider to increase link all html size
+    14. Make element positions relative on screen so that mobile version clean
+    15. style html elements more cleanly
+    16. advanced search that can handle typos
