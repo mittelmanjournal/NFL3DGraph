@@ -30,3 +30,4 @@ TODO: Internal
     14. Make element positions relative on screen so that mobile version clean
     15. style html elements more cleanly
     16. advanced search that can handle typos
+    17. mobile setting with clicking functionality showing html and buttons are scaled better (relatively)
