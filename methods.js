@@ -1,7 +1,20 @@
 import { CSS2DRenderer, CSS2DObject } from '//unpkg.com/three/examples/jsm/renderers/CSS2DRenderer.js';
 import { getGraph, namesShown } from './main.js';
 
-export const createGraph = (nodeResolution, nodeOpacity, linkOpacity) => {
+export const isMobileDevice = () => {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+};
+
+export const createPCGraph = () => {
+    return createGraph(20, 0.9, true, focusOnNode, true, showNodeHtmlOnHover, 3, 1, 5, 0.4, false, null, true, showLinkHtmlOnHover);
+};
+
+export const createMobileGraph = () => {
+    return createGraph(20, 0.9, true, focusOnNodeMobile, false, null, 3, 1, 5, 0.4, true, focusOnLinkMobile, false, null);
+}
+
+const createGraph = (nodeResolution, nodeOpacity, useOnNodeClick, funcOnNodeClick, useOnNodeHover, funcOnNodeHover, arrowSize, arrowRelPos, linkHoverPrecision, linkOpacity, useOnLinkClick,
+    funcOnLinkClick, useOnLinkHover, funcOnLinkHover) => {
     const Graph = ForceGraph3D({
         extraRenderers: [new CSS2DRenderer()]
     })
@@ -9,8 +22,6 @@ export const createGraph = (nodeResolution, nodeOpacity, linkOpacity) => {
         .jsonUrl('qbAndReceiverData.json')
         .nodeThreeObjectExtend(true)
         .nodeThreeObject(setupNode)
-        .onNodeClick(focusOnNode)
-        .onNodeHover(showNodeHtmlOnHover)
         .nodeVal(nodeSize)
         .nodeLabel(node => "")
         .nodeResolution(nodeResolution)
@@ -18,15 +29,69 @@ export const createGraph = (nodeResolution, nodeOpacity, linkOpacity) => {
         .linkThreeObjectExtend(true)
         .linkThreeObject(setupLink)
         .linkPositionUpdate(centerLinkHtml)
-        .onLinkHover(showLinkHtmlOnHover)
-        .linkDirectionalArrowLength(3)
-        .linkDirectionalArrowRelPos(1)
-        .linkHoverPrecision(5)
+        .linkDirectionalArrowLength(arrowSize)
+        .linkDirectionalArrowRelPos(arrowRelPos)
+        .linkHoverPrecision(linkHoverPrecision)
         .linkOpacity(linkOpacity);
+
+    if (useOnNodeClick) {
+        Graph.onNodeClick(funcOnNodeClick);
+    }
+
+    if (useOnNodeHover) {
+        Graph.onNodeHover(funcOnNodeHover);
+    }
+
+    if (useOnLinkClick) {
+        Graph.onLinkClick(funcOnLinkClick);
+    }
+
+    if (useOnLinkHover) {
+        Graph.onLinkHover(funcOnLinkHover);
+    }
 
     Graph.d3Force('charge').strength(-500);
 
     return Graph;
+};
+
+const focusOnNodeMobile = node => {
+    const nodeEl = document.getElementById("node-id-" + node.id);
+    if (!namesShown) nodeEl.firstChild.style.visibility = "visible";
+    nodeEl.style.visibility = 'visible';
+    focusOnNode(node);
+};
+
+const focusOnLinkMobile = link => {
+    const currLabel = document.getElementById('link-id-' + link.source.id + '-' + link.target.id);
+    if (currLabel) {
+        currLabel.style.visibility = 'visible';
+    }
+
+    const Graph = getGraph(); // Access the Graph instance
+    const distance = 40;
+    
+    // Calculate the midpoint of the link
+    const midPoint = {
+        x: (link.source.x + link.target.x) / 2,
+        y: (link.source.y + link.target.y) / 2,
+        z: (link.source.z + link.target.z) / 2
+    };
+
+    const distRatio = 1 + distance / Math.hypot(midPoint.x, midPoint.y, midPoint.z);
+
+    const newPos = {
+        x: midPoint.x * distRatio,
+        y: midPoint.y * distRatio,
+        z: midPoint.z * distRatio
+    };
+
+    Graph.cameraPosition(
+        newPos,
+        midPoint,
+        2000
+    );
+
 };
 
 export const focusOnNode = node => {
