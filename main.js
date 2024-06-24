@@ -1,5 +1,27 @@
 import { createGraph, focusOnNode } from './methods.js';
 
+// Function to show a popup with the given message for the specified duration
+const showPopup = (message, duration) => {
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.textContent = message;
+
+    document.body.appendChild(popup);
+    popup.style.display = 'block';
+
+    setTimeout(() => {
+        popup.style.display = 'none';
+        document.body.removeChild(popup);
+    }, duration);
+};
+
+const isMobileDevice = () => {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+};
+
+// Example usage: Show "Hello World" for 2 seconds
+showPopup(isMobileDevice(), 2000);
+
 export let namesShown = false;
 let Graph = createGraph(10, 0.9, 0.4);
 
