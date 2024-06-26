@@ -1,37 +1,93 @@
 body {
     margin: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Prevent scrollbars */
 }
 
-/*TODO optimize the CSS below, make the button positions not absolute, but relative*/
 #container {
     position: relative;
-    display: inline-block;
-    /* Ensure inline elements are correctly aligned */
+    width: 100%;
+    height: 100vh;
 }
 
-#seeEntireGraphBtn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1;
+#3d-graph {
+    width: 100%;
+    height: 100%;
 }
 
-#toggleNamesBtn {
+#controls {
     position: absolute;
     top: 10px;
-    right: 100px;
-    z-index: 1;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10; /* Ensure the controls are on top of the graph */
+    transition: max-height 0.3s, opacity 0.3s; /* Animation for collapsing */
+}
+
+#toggleControlsBtn {
+    width: 20px;
+    height: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.arrow {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+}
+
+.down {
+    border-top: 10px solid #007bff;
+}
+
+.up {
+    border-bottom: 10px solid #007bff;
 }
 
 #searchContainer {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
-#searchBtn {
-    margin-left: 5px;
+#searchInput {
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#searchBtn,
+#seeEntireGraphBtn,
+#toggleNamesBtn {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#searchBtn:hover,
+#seeEntireGraphBtn:hover,
+#toggleNamesBtn:hover {
+    background-color: #0056b3;
 }
 
 .node-container {
@@ -48,6 +104,5 @@ body {
     border-radius: 4px;
     background-color: rgba(37, 12, 54, 0.8);
     color: rgb(238, 216, 216);
-    /* Set the text color to white */
     user-select: none;
 }

@@ -1,6 +1,12 @@
 import { CSS2DRenderer, CSS2DObject } from '//unpkg.com/three/examples/jsm/renderers/CSS2DRenderer.js';
 import { getGraph, namesShown } from './main.js';
 
+let curSelectedNodeMobile = null;
+let prevSelectedNodeMobile = null;
+
+let curSelectedLinkMobile = null;
+let prevSelectedLinkMobile = null;
+
 export const isMobileDevice = () => {
     return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
 };
@@ -56,42 +62,27 @@ const createGraph = (nodeResolution, nodeOpacity, useOnNodeClick, funcOnNodeClic
 };
 
 const focusOnNodeMobile = node => {
-    const nodeEl = document.getElementById("node-id-" + node.id);
-    if (!namesShown) nodeEl.firstChild.style.visibility = "visible";
-    nodeEl.style.visibility = 'visible';
-    focusOnNode(node);
-};
+    prevSelectedNodeMobile = curSelectedNodeMobile;
+    curSelectedNodeMobile = node;
+    if (prevSelectedNodeMobile != curSelectedNodeMobile) {
+        // try to hide prev selected node html here
+        const nodeEl = document.getElementById("node-id-" + curSelectedNodeMobile.id);
+        if (!namesShown) nodeEl.firstChild.style.visibility = "visible";
+        nodeEl.style.visibility = 'visible';
 
-const focusOnLinkMobile = link => {
-    const currLabel = document.getElementById('link-id-' + link.source.id + '-' + link.target.id);
-    if (currLabel) {
-        currLabel.style.visibility = 'visible';
+        if (prevSelectedNodeMobile != null) {
+            const prevNodeEl = document.getElementById("node-id-" + prevSelectedNodeMobile.id);
+            if (!namesShown) prevNodeEl.firstChild.style.visibility = "hidden";
+            prevNodeEl.style.visibility = 'hidden';
+        }
+        focusOnNode(node);
+    } else {
+        const nodeEl = document.getElementById("node-id-" + curSelectedNodeMobile.id);
+        if (!namesShown) nodeEl.firstChild.style.visibility = "hidden";
+        nodeEl.style.visibility = 'hidden';
+
+        curSelectedNodeMobile = null;
     }
-
-    const Graph = getGraph(); // Access the Graph instance
-    const distance = 40;
-    
-    // Calculate the midpoint of the link
-    const midPoint = {
-        x: (link.source.x + link.target.x) / 2,
-        y: (link.source.y + link.target.y) / 2,
-        z: (link.source.z + link.target.z) / 2
-    };
-
-    const distRatio = 1 + distance / Math.hypot(midPoint.x, midPoint.y, midPoint.z);
-
-    const newPos = {
-        x: midPoint.x * distRatio,
-        y: midPoint.y * distRatio,
-        z: midPoint.z * distRatio
-    };
-
-    Graph.cameraPosition(
-        newPos,
-        midPoint,
-        2000
-    );
-
 };
 
 export const focusOnNode = node => {
@@ -110,32 +101,13 @@ export const focusOnNode = node => {
     );
 };
 
-const showNodeHtmlOnHover = (node, prevNode) => {
-    if (node) {
-        const nodeEl = document.getElementById("node-id-" + node.id);
-        if (!namesShown) nodeEl.firstChild.style.visibility = "visible";
-        nodeEl.style.visibility = 'visible';
-    }
-    if (prevNode) {
-        const nodeEl = document.getElementById("node-id-" + prevNode.id);
-        if (!namesShown) nodeEl.firstChild.style.visibility = "hidden";
-        nodeEl.style.visibility = 'hidden';
+const nodeSize = node => {
+    if (node.position === "QB") {
+        return node.passTouchdowns;
+    } else {
+        return node.receivingTouchdowns;
     }
 };
-
-function setupContainer(container, id, className) {
-    container.id = id;
-    container.className = className;
-    container.style.visibility = 'hidden';
-}
-
-const prepareData = elements => elements.map((el, index) => index < elements.length - 1 ? el + "<br>" : el).join("");
-
-function appendElements(parentElement, elements) {
-    elements.forEach(element => {
-        parentElement.appendChild(element);
-    });
-}
 
 const setupNode = node => {
     // TODO: parameterize the scale of all the contents of this div into createGraph()
@@ -176,6 +148,74 @@ const getNodeMap = () => {
     return new Map(getGraph().graphData().nodes.map(node => [node.id, node]));
 }
 
+const showNodeHtmlOnHover = (node, prevNode) => {
+    if (node) {
+        const nodeEl = document.getElementById("node-id-" + node.id);
+        if (!namesShown) nodeEl.firstChild.style.visibility = "visible";
+        nodeEl.style.visibility = 'visible';
+    }
+    if (prevNode) {
+        const nodeEl = document.getElementById("node-id-" + prevNode.id);
+        if (!namesShown) nodeEl.firstChild.style.visibility = "hidden";
+        nodeEl.style.visibility = 'hidden';
+    }
+};
+
+function setupContainer(container, id, className) {
+    container.id = id;
+    container.className = className;
+    container.style.visibility = 'hidden';
+}
+
+const focusOnLinkMobile = link => {
+
+    prevSelectedLinkMobile = curSelectedLinkMobile;
+    curSelectedLinkMobile = link;
+    if (prevSelectedLinkMobile != curSelectedLinkMobile) {
+        const currLabel = document.getElementById('link-id-' + curSelectedLinkMobile.source.id + '-' + curSelectedLinkMobile.target.id);
+        if (currLabel) {
+            currLabel.style.visibility = 'visible';
+        }
+        if (prevSelectedLinkMobile != null) {
+            const prevLabel = document.getElementById('link-id-' + prevSelectedLinkMobile.source.id + '-' + prevSelectedLinkMobile.target.id);
+            if (prevLabel) {
+                prevLabel.style.visibility = 'hidden';
+            }
+        }
+
+        const Graph = getGraph(); // Access the Graph instance
+        const distance = 40;
+
+        // Calculate the midpoint of the link
+        const midPoint = {
+            x: (curSelectedLinkMobile.source.x + curSelectedLinkMobile.target.x) / 2,
+            y: (curSelectedLinkMobile.source.y + curSelectedLinkMobile.target.y) / 2,
+            z: (curSelectedLinkMobile.source.z + curSelectedLinkMobile.target.z) / 2
+        };
+
+        const distRatio = 1 + distance / Math.hypot(midPoint.x, midPoint.y, midPoint.z);
+
+        const newPos = {
+            x: midPoint.x * distRatio,
+            y: midPoint.y * distRatio,
+            z: midPoint.z * distRatio
+        };
+
+        Graph.cameraPosition(
+            newPos,
+            midPoint,
+            2000
+        );
+    } else {
+        const currLabel = document.getElementById('link-id-' + curSelectedLinkMobile.source.id + '-' + curSelectedLinkMobile.target.id);
+        if (currLabel) {
+            currLabel.style.visibility = 'hidden';
+        }
+        curSelectedLinkMobile = null;
+    }
+
+};
+
 const setupLink = link => {
     const nodeMap = getNodeMap();
     const sourceNode = nodeMap.get(link.source);
@@ -203,18 +243,6 @@ const setupLink = link => {
     return new CSS2DObject(labelContainer);
 };
 
-const setHtmlElementTextAndId = (element, text, id) => { element.textContent = text; element.id = id; };
-
-const setImgSrcAndWidth = (element, src, width) => { element.src = src; element.style.width = width; };
-
-const nodeSize = node => {
-    if (node.position === "QB") {
-        return node.passTouchdowns;
-    } else {
-        return node.receivingTouchdowns;
-    }
-};
-
 const centerLinkHtml = (obj, { start, end }) => {
     const middlePos = {
         x: start.x + (end.x - start.x) / 2,
@@ -238,3 +266,15 @@ const showLinkHtmlOnHover = (link, prevLink) => {
         }
     }
 };
+
+const prepareData = elements => elements.map((el, index) => index < elements.length - 1 ? el + "<br>" : el).join("");
+
+function appendElements(parentElement, elements) {
+    elements.forEach(element => {
+        parentElement.appendChild(element);
+    });
+}
+
+const setHtmlElementTextAndId = (element, text, id) => { element.textContent = text; element.id = id; };
+
+const setImgSrcAndWidth = (element, src, width) => { element.src = src; element.style.width = width; };

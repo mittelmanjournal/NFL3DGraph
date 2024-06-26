@@ -1,4 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Graph Visualization</title>
     <script src="//unpkg.com/3d-force-graph"></script>
     <script type="importmap">{ "imports": { "three": "https://unpkg.com/three/build/three.module.js" }}</script>
     <script src="main.js" type="module"></script>
@@ -6,12 +11,16 @@
 </head>
 <body>
     <div id="container">
-        <div id="searchContainer">
-            <input type="text" id="searchInput" placeholder="Search...">
-            <button id="searchBtn">Search</button>
-        </div>
         <div id="3d-graph"></div>
-        <button id="seeEntireGraphBtn">Zoom out</button>
-        <button id="toggleNamesBtn">Toggle Node Names</button>
+        <div id="controls">
+            <button id="toggleControlsBtn" class="arrow down"></button>
+            <div id="searchContainer">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <button id="searchBtn">Search</button>
+            </div>
+            <button id="seeEntireGraphBtn">Zoom out</button>
+            <button id="toggleNamesBtn">Toggle Node Names</button>
+        </div>
     </div>
 </body>
+</html>
