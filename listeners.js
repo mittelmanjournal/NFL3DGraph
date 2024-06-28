@@ -1,10 +1,15 @@
-import { focusOnNode } from './methods.js';
-import { getGraph } from './main.js';
+import { isMobileDevice, getGraph } from './mainMethods.js';
+import { focusOnNode, focusOnNodeMobile, resetNodeSelectionMobile } from './methods/nodeMethods.js';
+import { resetLinkSelectionMobile } from './methods/linkMethods.js';
 
 export const setupEventListeners = () => {
     document.getElementById('seeEntireGraphBtn').addEventListener('click', () => {
         const Graph = getGraph();
         Graph.zoomToFit(300);
+        if(isMobileDevice()){
+            resetNodeSelectionMobile();
+            resetLinkSelectionMobile();
+        }
     });
 
     document.getElementById('searchBtn').addEventListener('click', () => {
@@ -13,25 +18,10 @@ export const setupEventListeners = () => {
         const node = Graph.graphData().nodes.find(n => n.name.toLowerCase() === findThisNode.toLowerCase());
 
         if (node) {
-            focusOnNode(node);
-            // todo create function to take in a node and show html
-                // wait no actually this todo above only applies to mobile, you might have to make different listeners for mobile.
-                // or if on pc use focusOnNode(node) vs on mobile use focusOnNodeMobile(node)
+            isMobileDevice() ? focusOnNodeMobile(node) : focusOnNode(node);
         } else {
             alert('Node not found. Check typing, or node may not have reached data threshold to be included.');
         }
-    });
-
-    document.getElementById('toggleNamesBtn').addEventListener('click', () => {
-        const playerNames = document.querySelectorAll("h3#name");
-        const Graph = getGraph();
-        let namesShown = false;
-
-        playerNames.forEach(playerName => {
-            playerName.style.visibility = namesShown ? 'hidden' : 'visible';
-        });
-
-        namesShown = !namesShown;
     });
 
     document.getElementById('toggleControlsBtn').addEventListener('click', () => {

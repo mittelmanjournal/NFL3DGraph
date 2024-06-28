@@ -72,8 +72,7 @@ body {
 }
 
 #searchBtn,
-#seeEntireGraphBtn,
-#toggleNamesBtn {
+#seeEntireGraphBtn {
     padding: 5px 10px;
     font-size: 14px;
     border: none;
@@ -85,8 +84,7 @@ body {
 }
 
 #searchBtn:hover,
-#seeEntireGraphBtn:hover,
-#toggleNamesBtn:hover {
+#seeEntireGraphBtn:hover {
     background-color: #0056b3;
 }
 
