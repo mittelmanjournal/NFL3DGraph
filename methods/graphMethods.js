@@ -48,6 +48,7 @@ const createGraph = (nodeResolution, nodeOpacity, useOnNodeClick, funcOnNodeClic
     }
 
     Graph.d3Force('charge').strength(-500);
+    
 
     return Graph;
 };

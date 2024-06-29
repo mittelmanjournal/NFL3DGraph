@@ -15,7 +15,7 @@ body {
     height: 100%;
 }
 
-#controls {
+#controlsContainer {
     position: absolute;
     top: 10px;
     left: 50%;
@@ -23,24 +23,34 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    z-index: 10; /* Ensure the controls container is on top of the graph */
+}
+
+#controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     padding: 10px;
     background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent background */
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 10; /* Ensure the controls are on top of the graph */
     transition: max-height 0.3s, opacity 0.3s; /* Animation for collapsing */
 }
 
 #toggleControlsBtn {
     width: 20px;
     height: 20px;
-    background: none;
+    background-color: white; /* Set background color to orange */
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
+    border-radius: 4px; /* Add border-radius for better visibility */
+    background-size: 80%; /* Scale the image to 80% of the button size */
+    background-repeat: no-repeat; /* Prevent repeating the image */
+    background-position: center; /* Center the image */
 }
 
 .arrow {
@@ -51,11 +61,14 @@ body {
 }
 
 .down {
-    border-top: 10px solid #007bff;
+    border-top: 10px solid white; /* Set arrow color to white */
+    background-image: url('downArrow.PNG');
 }
 
 .up {
-    border-bottom: 10px solid #007bff;
+    border-bottom: 10px solid white; /* Set arrow color to white */
+    background-image: url('downArrow.PNG'); /* Use the same image as down arrow */
+    transform: rotate(180deg);
 }
 
 #searchContainer {
@@ -104,3 +117,12 @@ body {
     color: rgb(238, 216, 216);
     user-select: none;
 }
+
+/* .scene-nav-info {
+    bottom: 5px;
+    width: 100%;
+    text-align: center;
+    color: slategrey;
+    opacity: 0; 
+    font-size: 10px;
+} */
